@@ -588,9 +588,7 @@ def download_music_api():
             }
             return APIResponse.success(response_data, "下载完成")
         elif return_format == 'redirect':
-            # 重定向到真实下载链接，外部下载工具可用
-            return redirect(music_info['download_url'])
-            # 返回文件下载
+            # 直接返回服务器上的文件（真正的直链）
             if not file_path.exists():
                 return APIResponse.error("文件不存在", 404)
             
@@ -601,12 +599,15 @@ def download_music_api():
                     download_name=filename,
                     mimetype=f"audio/{music_info['file_type']}"
                 )
-                response.headers['X-Download-Message'] = 'Download completed successfully'
                 response.headers['X-Download-Filename'] = quote(filename, safe='')
                 return response
             except Exception as e:
                 api_service.logger.error(f"发送文件失败: {e}")
                 return APIResponse.error(f"文件发送失败: {str(e)}", 500)
+        else:
+            # file 格式 - 返回文件下载（浏览器内下载）
+            if not file_path.exists():
+                return APIResponse.error("文件不存在", 404)
             
     except Exception as e:
         api_service.logger.error(f"下载音乐异常: {e}\n{traceback.format_exc()}")
