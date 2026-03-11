@@ -84,6 +84,10 @@ class DownloadException(Exception):
 class MusicDownloader:
     """音乐下载器主类"""
     
+    def _is_vercel_env(self) -> bool:
+        """检查是否在 Vercel 环境中运行"""
+        return bool(os.environ.get('VERCEL'))
+    
     def __init__(self, download_dir: str = "/tmp/downloads", max_concurrent: int = 3):
         """
         初始化音乐下载器
@@ -96,12 +100,7 @@ class MusicDownloader:
         if not self._is_vercel_env():
             self.download_dir.mkdir(exist_ok=True)
         self.max_concurrent = max_concurrent
-    
-    def _is_vercel_env(self) -> bool:
-        """检查是否在 Vercel 环境中运行"""
-        return bool(os.environ.get('VERCEL'))
         
-        # 初始化依赖
         self.cookie_manager = CookieManager()
         self.api = NeteaseAPI()
         
