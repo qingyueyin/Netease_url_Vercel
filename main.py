@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
 from urllib.parse import quote
-from flask import Flask, request, send_file, render_template, Response
+from flask import Flask, request, send_file, render_template, Response, redirect
 
 try:
     from music_api import (
@@ -583,10 +583,13 @@ def download_music_api():
                 'file_size_formatted': api_service._format_file_size(music_info['file_size']),
                 'file_path': str(file_path.absolute()),
                 'filename': filename,
-                'duration': music_info['duration']
+                'duration': music_info['duration'],
+                'download_url': music_info['download_url']  # 返回真实URL供外部下载
             }
             return APIResponse.success(response_data, "下载完成")
-        else:
+        elif return_format == 'redirect':
+            # 重定向到真实下载链接，外部下载工具可用
+            return redirect(music_info['download_url'])
             # 返回文件下载
             if not file_path.exists():
                 return APIResponse.error("文件不存在", 404)

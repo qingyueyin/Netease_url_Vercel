@@ -170,6 +170,14 @@
                                 <option value="jymaster">超清母带</option>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">下载方式</label>
+                            <select id="download_mode" class="form-select">
+                                <option value="browser">浏览器内下载</option>
+                                <option value="external">外部下载器（IDM等）</option>
+                            </select>
+                            <small class="text-muted">外部下载可获得更快的速度和更大的文件</small>
+                        </div>
                         <div class="text-center">
                             <button type="button" id="download-btn" class="btn btn-success w-50">下载音乐</button>
                         </div>
@@ -595,6 +603,7 @@
             $('#download-btn').on('click', function() {
                 const musicId = $('#download_id').val().trim();
                 const quality = $('#download_quality').val();
+                const downloadMode = $('#download_mode').val();
                 
                 if (!musicId) {
                     alert('请输入音乐ID或URL');
@@ -608,7 +617,14 @@
                     processedId = idMatch[1];
                 }
                 
-                // 显示进度条
+                // 外部下载模式：直接跳转到真实URL
+                if (downloadMode === 'external') {
+                    const redirectUrl = `/Download?id=${encodeURIComponent(processedId)}&quality=${encodeURIComponent(quality)}&format=redirect`;
+                    window.location.href = redirectUrl;
+                    return;
+                }
+                
+                // 浏览器内下载模式（原有逻辑）
                 $('#download-progress').removeClass('d-none');
                 $('#download-btn').prop('disabled', true).text('下载中...');
                 
