@@ -533,7 +533,7 @@ def download_music_api():
         music_info = {
             'id': music_id,
             'name': song_data['name'],
-            'artist_string': ', '.join(artist['name'] for artist in song_data['ar']),
+            'artist_string': '、'.join(artist['name'] for artist in song_data['ar']),
             'album': song_data['al']['name'],
             'pic_url': song_data['al']['picUrl'],
             'file_type': url_data['type'],
@@ -543,7 +543,7 @@ def download_music_api():
         }
         
         # 生成安全文件名
-        safe_name = f"{music_info['artist_string']} - {music_info['name']} [{quality}]"
+        safe_name = f"{music_info['artist_string']} - {music_info['name']}"
         safe_name = ''.join(c for c in safe_name if c not in r'<>:"/\|?*')
         filename = f"{safe_name}.{music_info['file_type']}"
         
