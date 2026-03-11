@@ -510,8 +510,8 @@ def download_music_api():
             return APIResponse.error(f"无效的音质参数，支持: {', '.join(valid_qualities)}")
         
         # 验证返回格式
-        if return_format not in ['file', 'json']:
-            return APIResponse.error("返回格式只支持 'file' 或 'json'")
+        if return_format not in ['file', 'json', 'redirect']:
+            return APIResponse.error("返回格式只支持 'file'、'json' 或 'redirect'")
         
         music_id = api_service._extract_music_id(music_id)
         cookies = api_service._get_cookies()
@@ -543,7 +543,7 @@ def download_music_api():
         }
         
         # 生成安全文件名
-        safe_name = f"{music_info['name']} [{quality}]"
+        safe_name = f"{music_info['artist_string']} - {music_info['name']} [{quality}]"
         safe_name = ''.join(c for c in safe_name if c not in r'<>:"/\|?*')
         filename = f"{safe_name}.{music_info['file_type']}"
         
